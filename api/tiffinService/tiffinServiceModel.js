@@ -1,22 +1,20 @@
 var mongoose = require('mongoose');
-
-var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var MealSchema =new Schema({
+var TiffinServiceSchema = new Schema({
     name: {
         type: String,
         required: true,
         unique: true
     },
-    price: {
-        type: Number,
-        required: true,
-    },
     description: {
         type: String,
         required: true
+    },
+    meals: {
+        type: Schema.Types.ObjectId,
+        ref: "Meal"
     }
 });
 
-module.exports = mongoose.model("Meal", MealSchema, "Meals");
+module.exports = mongoose.model('tiffinService', TiffinServiceSchema, 'tiffinServices');
