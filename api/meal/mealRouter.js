@@ -2,15 +2,11 @@ var express = require('express');
 var router = express.Router();
 var controller = require('./mealController');
 
-router.param('id', controller.idParam);
-
-router.route('/')
-    .get(controller.get)
-    .post(controller.post);
-
-router.route('/:id')
-    .get(controller.getByID)
-    .put(controller.put)
-    .delete(controller.delete);
+router.get("/", controller.index);
+router.get("/:id", controller.show);
+router.post("/", controller.create);
+router.put("/:id",controller.update);
+router.patch("/:id", controller.update);
+router.delete("/:id", controller.destroy);
 
 module.exports = router;

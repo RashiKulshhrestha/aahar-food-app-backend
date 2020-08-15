@@ -1,26 +1,29 @@
 const express = require('express');
 const app = express();
-let config = require('./config/config');
 let setupMiddleware = require('./middleware/commonMiddleware');
-let errorHandler = require('./middleware/errorHandler');
 let apiRouter = require('./api/index');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/food-app', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-});
+  // DB Config
+const db = require("./config/keys").mongoURI;
 
-const connection = mongoose.connection;
-connection.once('open', function() {
-    console.log("MongoDB connection gets successfully established.");
-}) 
+// Connect to MongoDB
+mongoose
+  .connect(db, { 
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true
+    })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
+ 
 
 setupMiddleware(app);
 
 app.use('/api/', apiRouter);
-
-app.use(errorHandler);
+  
+  const port = process.env.PORT || 5000;
+  
+  app.listen(port, () => console.log(`Server up and running on port ${port}`));
 
 module.exports = app;

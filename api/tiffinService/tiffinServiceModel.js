@@ -11,10 +11,10 @@ var TiffinServiceSchema = new Schema({
         type: String,
         required: true
     },
-    meals: {
+    _meals:[ {
         type: Schema.Types.ObjectId,
         ref: "Meal"
-    }
+    }]
 });
 
 module.exports = mongoose.model('tiffinService', TiffinServiceSchema, 'tiffinServices');

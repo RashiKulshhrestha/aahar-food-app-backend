@@ -12,6 +12,11 @@ var userSchema = new Schema({
         required: true,
         unique: true
     },
+    mobile: {
+        type: Number,
+        required: true,
+        unique: true
+    },
     hashed_password: {
         type: String,
         required: true
