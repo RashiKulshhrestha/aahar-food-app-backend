@@ -2,6 +2,14 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var OrderSchema = new Schema({
+    no_of_meals: {
+        type: Number,
+        required: true
+    },
+    no_of_days: {
+        type: Number,
+        required: true
+    },
     total_amount: {
         type: Number,
         required: true
@@ -10,17 +18,19 @@ var OrderSchema = new Schema({
         type: String,
         required: true,
     },
-    _meals: [{
-        type: Schema.Types.ObjectId,
-        ref: "Meal" 
-    }],
-    _user: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+    userId: {
+        type: String,
     },
-    _tiffin_service: {
+    user: {
         type: Schema.Types.ObjectId,
-        ref: "Tiffin Service"
+        ref: "user"
+    },
+    ownerId: {
+        type: String,
+    },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "owner"
     }
 });
 

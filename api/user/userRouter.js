@@ -1,9 +1,74 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('config');
+const { check,validationResult } = require('express-validator');
 
-router.route('/')
-    .get(function(req,res,next) {
-        res.send("user");
-    });
+const User = require('./userModel');
 
-    module.exports = router;
+// @route   Post api/users
+// @desc    Signup User
+// @access  Public
+router.post("/",
+[
+    check("name","Name field is required.").not().isEmpty(),
+    check("email", "Email field is required.").isEmail(),
+    check("mobile", "Mobile Number is required."),
+    check("password", "Password must be at least 8 characters.").isLength({ min:8 }),
+],
+async (req,res)=> {
+    const errors = validationResult(req);
+
+    if(!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { name, email, mobile, password } = req.body;
+
+    try {
+        let user = await User.findOne({ email });
+
+        if(user) {
+            return res
+            .status(400)
+            .json({ errors: [{ msg: "User already exists."}] });
+        }
+
+        user = new User({
+            name,
+            email,
+            mobile,
+            password,
+         });
+
+        const salt = await bcrypt.genSalt(10);
+
+        user.password = await bcrypt.hash(password, salt);
+
+        await user.save();
+
+        const payload = {
+            user: {
+                id:user.id
+            },
+        };
+
+        jwt.sign(
+            payload,
+            config.get("jwtSecret"),
+            { expiresIn: 360000 },
+            (err, token) => {
+                if(err) throw err;
+
+                res.json({ token });
+            }
+        );
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+module.exports = router;

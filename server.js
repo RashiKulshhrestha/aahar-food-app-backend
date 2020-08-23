@@ -1,29 +1,26 @@
 const express = require('express');
 const app = express();
-let setupMiddleware = require('./middleware/commonMiddleware');
-let apiRouter = require('./api/index');
-const mongoose = require('mongoose');
+const path = express('path');
+const connectMongoDB = require('./config/db');
+const apiRouter = require('./api/index');
 
-  // DB Config
-const db = require("./config/keys").mongoURI;
+// Connect To MongoDB
+connectMongoDB();
 
-// Connect to MongoDB
-mongoose
-  .connect(db, { 
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useCreateIndex: true
-    })
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch(err => console.log(err));
- 
+app.use(express.json({ extended: true }));
 
-setupMiddleware(app);
-
+//Define Routes
 app.use('/api/', apiRouter);
-  
-  const port = process.env.PORT || 5000;
-  
-  app.listen(port, () => console.log(`Server up and running on port ${port}`));
+ 
+// serve static assets and production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
 
-module.exports = app;
+  app.use("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
+
+const port = process.env.PORT || 5000;
+  
+app.listen(port, () => console.log(`Server up and running on port ${port}`));

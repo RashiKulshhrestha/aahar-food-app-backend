@@ -1,14 +1,13 @@
-var express = require('express');
-var mealRouter = require('./meal/mealRouter');
-var orderRouter = require('./order/orderRouter');
-var tiffinServiceRouter = require('./tiffinService/tiffinServiceRouter');
-var userRouter = require('./user/userRouter');
+const express = require('express');
+const apiRouter = express.Router();
+const ownerRouter = require('./owner/ownerRouter');
+const userRouter = require('./user/userRouter');
+const orderRouter = require('./order/orderRouter');
 
-var apiRouter = express.Router();
 
-apiRouter.use('/meals/', mealRouter);
+
 apiRouter.use('/orders/', orderRouter);
-apiRouter.use('/tiffin-services/', tiffinServiceRouter);
+apiRouter.use('/owners/', ownerRouter);
 apiRouter.use('/users/', userRouter);
 
-module.exports = (apiRouter);
+module.exports = apiRouter;
