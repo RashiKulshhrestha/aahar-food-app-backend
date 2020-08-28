@@ -14,7 +14,7 @@ router.post("/",
 [
     check("name","Name field is required.").not().isEmpty(),
     check("email", "Email field is required.").isEmail(),
-    check("mobile", "Mobile Number is required."),
+    check("mobile", "Mobile Number is required.").isLength({ min:10 ,max:10 }),
     check("password", "Password must be at least 8 characters.").isLength({ min:8 }),
 ],
 async (req,res)=> {
@@ -71,4 +71,18 @@ async (req,res)=> {
     }
 });
 
+//@route   Get api/users
+//@desc    Get the list of users
+//@access  Private
+
+router.get("/", async (req, res) => {
+    try {
+      const users = await User.find();
+      res.json(users);
+    }
+    catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  });
 module.exports = router;

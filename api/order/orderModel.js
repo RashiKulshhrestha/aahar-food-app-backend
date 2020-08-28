@@ -18,15 +18,9 @@ var OrderSchema = new Schema({
         type: String,
         required: true,
     },
-    userId: {
-        type: String,
-    },
     user: {
         type: Schema.Types.ObjectId,
         ref: "user"
-    },
-    ownerId: {
-        type: String,
     },
     owner: {
         type: Schema.Types.ObjectId,

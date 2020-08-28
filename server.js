@@ -1,9 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const path = express('path');
 const connectMongoDB = require('./config/db');
 const apiRouter = require('./api/index');
 
+app.use(cors());
 // Connect To MongoDB
 connectMongoDB();
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const Order = require('./orderModel');
 const Owner = require('../owner/ownerModel');
 const User = require('../user/userModel');
-const authOwner = require('../../middleware/authOwner');
+//const authOwner = require('../../middleware/authOwner');
 const authUser = require('../../middleware/authUser');
 
 //@route   Post api/order
@@ -28,35 +28,11 @@ const authUser = require('../../middleware/authUser');
 //     }
 // ) 
 
-router.post("/",[authUser,authOwner],
+router.post("/",[authUser],
 async(req,res)=>{
-    const {
-        no_of_meals,
-        no_of_days,
-        total_amount,
-        status,
-        userId,
-        ownerId
-    } = req.body
-    const userField={}
-    userField.user = req.user._id;
-    const ownerField = {}
-    ownerField.owner = req.owner._id; 
     try{
-        const user = await User.findOne({user: req.user._id});
-        const owner = await Owner.findOne({owner: req.owner._id});
-        console.log(owner);
-        const userId = user._id;
-        const ownerId = owner._id;
-        const newOrder = new Order({
-            no_of_meals,
-            no_of_days,
-            total_amount,
-            status,
-            userId,
-            ownerId
-        })
-        await newOrder.save();
+        const newOrder = req.body;
+        await Order.create(newOrder);
         res.send(newOrder);
     }
     catch(err){

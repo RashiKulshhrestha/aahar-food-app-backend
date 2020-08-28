@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require("../../middleware/auth");
+const authOwner = require("../../middleware/authOwner");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const bcrypt = require("bcryptjs");
@@ -10,7 +10,7 @@ const Owner = require("../owner/ownerModel");
 // @route   GET api/owner-auth
 // @desc    Authenticate Owner and Get Token
 // @access  Public
-router.get("/", auth, async (req, res) => {
+router.get("/", authOwner, async (req, res) => {
   try {
     const owner = await Owner.findById(req.owner.id).select("-password");
     res.json(owner);
@@ -38,13 +38,13 @@ router.post(
     try {
       let owner = await Owner.findOne({ email });
 
-      if (!user) {
+      if (!owner) {
         return res
           .status(400)
           .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(password, owner.password);
 
       if (!isMatch) {
         return res
@@ -52,8 +52,8 @@ router.post(
           .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
       const payload = {
-        user: {
-          id: user.id,
+        owner: {
+          id: owner.id,
         },
       };
 

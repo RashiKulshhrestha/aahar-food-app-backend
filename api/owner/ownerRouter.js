@@ -18,7 +18,7 @@ router.post("/",
     check("service_name","Service Name field is required.").not().isEmpty(),
     check("owner_name","Owner Name field is required.").not().isEmpty(),
     check("email", "Email field is required.").isEmail(),
-    check("mobile", "Mobile Number is required."),
+    check("mobile", "Mobile Number is required.").isLength({ min:10 ,max:10 }),
     check("password", "Password must be at least 8 characters.").isLength({ min:8 }),
     check("address", "Address field is required.").not().isEmpty(),
     check("city", "City field is required.").not().isEmpty(),
@@ -95,16 +95,16 @@ async (req,res)=> {
 //@desc    Add the description of meal
 //@access  Private
 
-router.patch(
-    "/:_id",
-    [ authOwner ],
-    async (res, req) => {
+router.put(
+    "/:id",
+    async (req, res) => {
         try {
-            const owner = await Owner.findOneAndUpdate({_id: req.params._id}, 
-                {$set:
+            const owner = await Owner.findOneAndUpdate(req.params.id,
                 {
-                    description: req.body.description
-                }});
+                    $set:{
+                        description: req.body.description
+                    }
+                });
             console.log(owner);
             await owner.save();
 
@@ -133,10 +133,10 @@ router.get("/", authUser, async (req, res) => {
   });
 //@route   Get api/owners/:id
 
-router.get("/:_id",
+router.get("/:id",
 async (req, res) => {
     try{
-        const getowner = await Owner.find({_id: req.params._id});
+        const getowner = await Owner.findById(req.params.id);
         res.json(getowner);
     }
     catch(err){
