@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const { check, validationResult } = require("express-validator");
 
 const Owner = require("../owner/ownerModel");
-// @route   GET api/owner-auth
+// @route   GET api/authOwner
 // @desc    Authenticate Owner and Get Token
 // @access  Public
 router.get("/", authOwner, async (req, res) => {
@@ -60,7 +60,7 @@ router.post(
       jwt.sign(
         payload,
         config.get("jwtSecret"),
-        { expiresIn: 360000 },
+        { expiresIn: 3600 },// 60 minutes
         (err, token) => {
           if (err) throw err;
 

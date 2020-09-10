@@ -6,6 +6,7 @@ const config = require('config');
 const { check,validationResult } = require('express-validator');
 
 const User = require('./userModel');
+const authOwner = require('../../middleware/authOwner');
 
 // @route   Post api/users
 // @desc    Signup User
@@ -85,4 +86,34 @@ router.get("/", async (req, res) => {
       res.status(500).send("Server Error");
     }
   });
+
+
+  //@route   Get api/users/:email
+
+router.get("/:email",
+async (req, res) => {
+    try{
+        const getuser = await User.findOne({email: req.params.email},{"_id":1});
+        res.json(getuser);
+    }
+    catch(err){
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+//@route   Delete api/users/:_id/
+//desc     Delete one user
+//access   Public
+router.delete("/:_id",
+async (req, res) => {
+    try{
+        await User.findOneAndDelete(req.params.id);
+        res.json({msg: "User deleted"})
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
 module.exports = router;

@@ -96,10 +96,10 @@ async (req,res)=> {
 //@access  Private
 
 router.put(
-    "/:id",
+    "/:_id",
     async (req, res) => {
         try {
-            const owner = await Owner.findOneAndUpdate(req.params.id,
+            const owner = await Owner.findOneAndUpdate({_id:req.params._id},
                 {
                     $set:{
                         description: req.body.description
@@ -121,9 +121,10 @@ router.put(
 //@desc    Get the list of owners
 //@access  Private
 
-router.get("/", authUser, async (req, res) => {
+router.get("/", async (req, res) => {
+    //const { service_name, description}=req.body;
     try {
-      const owners = await Owner.find();
+      const owners = await Owner.find({});
       res.json(owners);
     }
     catch (err) {
@@ -133,10 +134,10 @@ router.get("/", authUser, async (req, res) => {
   });
 //@route   Get api/owners/:id
 
-router.get("/:id",
+router.get("/:email",
 async (req, res) => {
     try{
-        const getowner = await Owner.findById(req.params.id);
+        const getowner = await Owner.findOne({email: req.params.email},{"_id":1});
         res.json(getowner);
     }
     catch(err){
@@ -160,4 +161,20 @@ async (req, res) => {
         res.status(500).send("Server Error");
     }
 });
+
+//@route   Delete api/owners/:_id/
+//desc     Delete one owner
+//access   Public
+router.delete("/:_id",
+async (req, res) => {
+    try{
+        await Owner.findOneAndDelete(req.params.id);
+        res.json({msg: "Owner deleted"})
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
 module.exports = router;

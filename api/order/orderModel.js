@@ -10,21 +10,28 @@ var OrderSchema = new Schema({
         type: Number,
         required: true
     },
-    total_amount: {
-        type: Number,
+    start_date:{
+        type: Date,
         required: true
+    },
+    end_date:{
+        type: Date,
+        required: true
+    },
+    total_amount: {
+        type: String,
     },
     status: {
         type: String,
-        required: true,
+        default: "Placed",
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "user"
+    user_id: {
+        type: String,
+        required: true
     },
-    owner: {
-        type: Schema.Types.ObjectId,
-        ref: "owner"
+    owner_id: {
+        type: String,
+        required: true
     }
 });
 
